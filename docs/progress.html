@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f1f1f1">
+<title>Progress Tracker</title>
+<style>
+
+:root{color-scheme:light;--bg:#f1f1f1;--paper:#ffffff;--ink:#000000;--muted:#626262;--lime:#edff55;--line:#d6d6d6;--shadow:#000000;--grid:#00000012}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#202020;--paper:#2c2c2c;--ink:#ffffff;--muted:#bdbdbd;--line:#505050;--shadow:#000000;--grid:#ffffff12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Pretendard","Malgun Gothic",system-ui,sans-serif}button,input{font:inherit}button{cursor:pointer;color:inherit;-webkit-tap-highlight-color:transparent}button:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:5px}.wrap{max-width:1320px;margin:auto;padding:0 48px}.topbar{border-bottom:2px solid var(--ink)}.nav{min-height:88px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:11px;font-size:17px;font-weight:900;letter-spacing:-.7px;line-height:1.05}.brand-icon{display:grid;place-items:center;width:36px;height:36px;border:2px solid #000000;background:var(--lime);color:#000000;font-size:25px;box-shadow:3px 3px 0 var(--shadow)}.nav-right{display:flex;align-items:center;gap:24px}.mono{font-family:"Courier New",monospace;font-size:11px;font-weight:700;letter-spacing:1.3px}.nav-button{width:38px;height:38px;display:grid;place-items:center;border:2px solid var(--ink);background:var(--paper);font-size:20px;box-shadow:2px 2px 0 var(--shadow)}.hero{padding:40px 0 32px}h1{font-size:clamp(34px,4.3vw,62px);line-height:1.2;letter-spacing:-2.7px;margin:0 0 16px;font-weight:900;overflow-wrap:anywhere}.subtitle{margin:0;color:var(--muted);font-size:15px}.overview{display:grid;grid-template-columns:1.15fr 1fr 1fr;border:2px solid var(--ink);box-shadow:6px 6px 0 var(--shadow);margin-bottom:29px}.overview>div{padding:24px 26px;min-width:0}.overview>div+div{border-left:2px solid var(--ink)}.progress-card{background:var(--lime);color:#000000}.metric-title{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;gap:10px}.metric-title .mono{font-size:10px}.big-number{font-family:Arial,sans-serif;font-size:65px;line-height:1.15;font-weight:900;letter-spacing:-4px;margin:12px 0}.big-number small{font-size:28px;letter-spacing:-1px;margin-left:3px}.bar{height:12px;background:#00000020;border:1.5px solid #000000}.bar>span{display:block;height:100%;background:#000000;transition:width .2s}.metric-foot{font-size:12px;margin-top:8px}.count-card{background:var(--paper)}.count-numbers{display:flex;gap:30px;margin:17px 0 10px}.count-numbers strong{display:block;font:900 43px/1.2 Arial,sans-serif;letter-spacing:-2px}.count-numbers span{display:block;color:var(--muted);font-size:12px;margin-top:5px}.count-numbers>div+div{border-left:1px solid var(--line);padding-left:30px}.next-card{background:var(--paper);display:flex;flex-direction:column}.next-title{font-size:19px;line-height:1.45;letter-spacing:-.7px;margin:21px 0 8px;font-weight:800;overflow-wrap:anywhere}.next-phase{color:var(--muted);font-size:12px;margin-top:auto}.board-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:45px 0 22px}.board-title{display:flex;align-items:center;gap:12px}h2{font-size:22px;line-height:1.3;letter-spacing:-.8px;margin:0}.phase-count{border:1.5px solid var(--ink);padding:1px 8px;font:700 12px/1.6 "Courier New",monospace;background:var(--paper)}.filters{display:flex;border:2px solid var(--ink);background:var(--paper)}.filter{padding:7px 15px;border:0;background:transparent;font-size:12px;font-weight:700}.filter+.filter{border-left:1px solid var(--ink)}.filter[aria-pressed="true"]{background:var(--ink);color:var(--bg)}.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:22px;align-items:start}.phase{border:2px solid var(--ink);background:var(--paper);box-shadow:4px 4px 0 var(--shadow);min-width:0}.phase-heading{padding:18px 20px;border-bottom:2px solid var(--ink);background:var(--phase-color);color:#000000}.phase-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.phase-no{font:700 11px/1.5 "Courier New",monospace;letter-spacing:1px}.badge{font-size:10px;font-weight:800;padding:2px 8px;border:1.5px solid #000000;background:#ffffff;box-shadow:2px 2px 0 #000000}.phase-toggle{width:100%;display:flex;justify-content:space-between;gap:15px;align-items:center;text-align:left;border:0;padding:0;background:transparent;color:inherit;font-weight:900;font-size:20px;letter-spacing:-.7px}.phase-toggle .chevron{font-size:21px;font-weight:400}.desc{font-size:12px;margin:8px 0 0;opacity:.8}.tasks{margin:0;list-style:none;padding:5px 18px}.task{display:flex;gap:12px;padding:18px 0;align-items:flex-start}.task+.task{border-top:1px solid var(--line)}.task input{appearance:none;-webkit-appearance:none;flex:0 0 20px;width:20px;height:20px;margin:2px 0 0;border:2px solid var(--ink);background:var(--paper);cursor:pointer;display:grid;place-content:center;border-radius:0}.task input:checked{background:var(--lime);border-color:#000000}.task input:checked::after{content:"";width:9px;height:5px;border-left:2px solid #000000;border-bottom:2px solid #000000;transform:translateY(-1px) rotate(-45deg)}.task label{flex:1;cursor:pointer;font-size:13px;line-height:1.65;overflow-wrap:anywhere}.task.checked .task-text{text-decoration:line-through;color:var(--muted)}.note{display:block;color:var(--muted);font-size:11px;margin-top:5px}.phase-footer{display:flex;justify-content:space-between;gap:12px;padding:13px 19px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);align-items:center}.mini-bar{width:75px;height:5px;background:var(--line)}.mini-bar span{display:block;height:100%;background:var(--ink)}.empty{font-size:12px;color:var(--muted);padding:24px 0}.bottom-note{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:28px 0 42px}.save-note{margin:0;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:8px}.save-dot{height:6px;width:6px;border-radius:50%;background:var(--muted);flex-shrink:0}.reset{border:0;border-bottom:1px solid var(--muted);color:var(--muted);background:transparent;padding:2px 0;font-size:11px;white-space:nowrap}footer{border-top:2px solid var(--ink);padding:18px 0 24px;display:flex;gap:20px;justify-content:space-between;color:var(--muted)}footer .mono{font-size:10px;letter-spacing:.7px}.nav-button:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--shadow)}.nav-button:active{transform:translate(2px,2px);box-shadow:none}
+@media(min-width:1000px){.phase:only-child{max-width:600px}}
+@media(max-width:800px){.wrap{padding:0 24px}.overview{grid-template-columns:1fr 1fr}.overview .progress-card{grid-column:1/-1}.overview>.count-card{border-left:0;border-top:2px solid var(--ink)}.overview>.next-card{border-top:2px solid var(--ink)}.board{gap:20px}}
+@media(max-width:520px){.wrap{padding:0 20px}.nav{min-height:72px}.hero{padding:30px 0 26px}h1{letter-spacing:-1.5px}.subtitle{font-size:13px}.overview{box-shadow:4px 4px 0 var(--shadow);grid-template-columns:1fr}.overview>div{padding:19px 16px}.overview>.next-card{border-left:0}.count-numbers{gap:40px}.count-numbers>div+div{padding-left:40px}.big-number{font-size:64px}.next-title{margin:15px 0 8px}.board-toolbar{align-items:flex-start;flex-direction:column;margin-top:34px;gap:16px}.filter{padding:8px 18px}.board{grid-template-columns:1fr}.bottom-note{align-items:flex-start}footer{flex-direction:column;gap:8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+
+.calendar-section{margin:36px 0 0}.calendar-intro{margin:8px 0 18px;color:var(--muted);font-size:12px}.calendar-layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(260px,1fr);border:2px solid var(--ink);box-shadow:4px 4px 0 var(--shadow);background:var(--paper)}.calendar-main{min-width:0}.calendar-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px;border-bottom:2px solid var(--ink)}.calendar-nav h3{font-size:20px;margin:0;letter-spacing:-.7px}.calendar-actions{display:flex;gap:6px}.calendar-button{border:1.5px solid var(--ink);background:var(--paper);padding:5px 10px;font-size:12px;min-height:34px}.weekdays,.calendar-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.weekdays span{padding:9px 0;text-align:center;font-size:11px;color:var(--muted);border-bottom:1px solid var(--line)}.day{position:relative;min-width:0;min-height:92px;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;padding:8px;display:flex;flex-direction:column;align-items:flex-start;gap:5px}.day:nth-child(7n){border-right:0}.day.blank{background:var(--bg)}.day[aria-pressed="true"]{background:var(--lime);color:#000000;box-shadow:inset 0 0 0 2px #000000}.day-number{font:700 13px/1.5 "Courier New",monospace}.day[aria-current="date"] .day-number{background:var(--ink);color:var(--paper);padding:0 5px}.day-preview{max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:10px}.day-count{font-size:10px;font-weight:700}.calendar-side{border-left:2px solid var(--ink);padding:20px;min-width:0;background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}.calendar-side h3{margin:0 0 4px;font-size:17px}.date-caption{margin:0 0 18px;font-size:11px;color:var(--muted)}.schedule-form{display:grid;gap:8px}.schedule-form label{font-size:12px;font-weight:700}.schedule-form select,.schedule-form input{width:100%;min-width:0;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);padding:9px 8px;border-radius:0;font:inherit;font-size:12px}.schedule-submit{border:2px solid #000000;background:var(--lime);color:#000000;padding:9px;font-weight:800;font-size:12px;box-shadow:2px 2px 0 var(--shadow);margin:6px 2px 0 0}.schedule-submit:disabled{opacity:.5;cursor:not-allowed}.schedule-status{font-size:11px;min-height:18px;margin:8px 0;color:var(--muted)}.agenda{list-style:none;padding:0;margin:12px 0 0}.agenda-item{padding:12px 0;border-top:1px solid var(--line);display:flex;align-items:flex-start;gap:8px}.agenda-item input{margin:4px 0 0;accent-color:#000000;width:17px;height:17px;flex-shrink:0}.agenda-item label{font-size:12px;overflow-wrap:anywhere;flex:1}.agenda-item.done .agenda-text{text-decoration:line-through;color:var(--muted)}.agenda-item small{display:block;color:var(--muted);font-size:10px}.remove-date{border:0;background:transparent;color:var(--muted);font-size:11px;padding:0 2px;white-space:nowrap}.task-body{flex:1;min-width:0}.task-body label{display:block}.task-date{display:block;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:10px;padding:2px 7px;margin:9px 0 0;text-align:left}.task-date.scheduled{background:var(--lime);color:#000000;border-color:#000000}.task-date:hover{border-color:var(--ink)}select:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+@media(max-width:800px){.calendar-layout{grid-template-columns:1fr}.calendar-side{border-left:0;border-top:2px solid var(--ink)}.day{min-height:80px}}
+@media(max-width:520px){.calendar-nav{padding:12px}.calendar-nav h3{font-size:17px}.calendar-button{padding:4px 8px}.day{padding:6px 4px;min-height:68px}.day-preview{display:none}.day-count{font-size:9px}.calendar-side{padding:16px}}
+
+/* Shared hover treatment for all enabled buttons, including selected dates and filters. */
+button:not(:disabled):not(.phase-toggle):hover{background:#000000;color:#ffffff;border-color:#000000}
+button:not(:disabled):not(.phase-toggle):hover .day-number{background:transparent;color:inherit}
+.calendar-side h3,.calendar-side .date-caption,.schedule-form label,.schedule-status{background-color:var(--paper);width:fit-content;max-width:100%}
+.agenda-item{background-color:var(--paper)}
+
+.phase-heading:is(:hover,:focus-within){background:#000000;color:#ffffff}
+.phase-heading:is(:hover,:focus-within) .phase-toggle{background:transparent;color:inherit}
+.phase-heading:is(:hover,:focus-within) .badge{background:#000000;color:#ffffff;border-color:#ffffff;box-shadow:2px 2px 0 #ffffff}
+.phase-heading:is(:hover,:focus-within) .desc{opacity:1}
+.phase-heading .phase-toggle:focus-visible{outline-color:currentColor}
+.agenda-text,.day-preview{font-weight:700}
+
+.celebration{padding:8px;border:0;background:transparent;color:#000000;width:min(440px,calc(100% - 32px));max-width:none;overflow:visible}
+.celebration::backdrop{background:#00000085}
+.celebration-card{position:relative;z-index:1;border:2px solid #000000;background:#ffffff;box-shadow:7px 7px 0 #000000;text-align:center;padding:30px 24px}
+.celebration-mark{display:grid;place-items:center;width:66px;height:66px;margin:0 auto 20px;background:var(--lime);border:2px solid #000000;box-shadow:3px 3px 0 #000000;font-size:36px;font-weight:900}
+.celebration-card h2{font-size:28px;margin:0 0 12px}.celebration-card p{font-size:14px;margin:0 0 24px;line-height:1.8}
+.celebration-close{background:var(--lime);color:#000000;border:2px solid #000000;padding:10px 24px;font-weight:800;box-shadow:3px 3px 0 #000000}
+.confetti{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.confetti-piece{position:absolute;left:var(--x);top:-24px;width:var(--w);height:var(--h);background:var(--color);animation:confetti-fall var(--duration) var(--delay) ease-in both}
+@keyframes confetti-fall{from{transform:translate3d(0,-4vh,0) rotate(0deg)}to{transform:translate3d(var(--drift),110vh,0) rotate(var(--spin))}}
+@media(prefers-reduced-motion:reduce){.confetti{display:none}.confetti-piece{animation:none}}
+
+.shop-open{display:flex;align-items:center;gap:10px;padding:8px 13px;border:2px solid var(--ink);background:var(--paper);font-size:12px;font-weight:800;box-shadow:2px 2px 0 var(--shadow)}
+.shop-wallet-pill{padding:1px 6px;border:1px solid currentColor;font-family:"Courier New",monospace;white-space:nowrap}
+.shop-dialog{width:min(860px,calc(100% - 32px));max-width:none;max-height:calc(100dvh - 40px);padding:0;border:2px solid var(--ink);background:var(--paper);color:var(--ink);box-shadow:7px 7px 0 var(--shadow)}
+.shop-dialog::backdrop{background:#00000085}.shop-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:21px 24px;border-bottom:2px solid var(--ink);background:var(--lime);color:#000000}.shop-header h2{font-size:24px}.shop-close{width:34px;height:34px;border:2px solid #000000;background:#ffffff;color:#000000;font-size:23px;line-height:1}.shop-body{padding:24px}.shop-balance{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}.shop-balance span{font-size:13px}.shop-balance strong{font:900 30px/1.2 Arial,sans-serif;letter-spacing:-1px}.shop-help{margin:0;color:var(--muted);font-size:12px}.shop-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:20px 0}.shop-card{border:2px solid var(--ink);background:var(--paper);min-width:0;box-shadow:3px 3px 0 var(--shadow)}.theme-sample{height:106px;padding:16px;background:var(--sample);color:#000000;border-bottom:2px solid var(--ink);display:flex;flex-direction:column;justify-content:space-between}.sample-heading{width:70%;height:8px;background:#000000}.sample-lines{height:24px;border:1px solid #000000;background:linear-gradient(#ffffffaa,#ffffffaa);position:relative}.sample-lines::after{content:"";position:absolute;left:6px;top:6px;width:9px;height:9px;background:var(--sample);border:1px solid #000000}.shop-card-body{padding:13px 11px}.shop-card h3{font-size:14px;margin:0 0 6px}.theme-price{font-size:11px;color:var(--muted);min-height:18px;margin:0 0 12px}.theme-actions{display:grid;gap:7px}.shop-action{width:100%;padding:7px 5px;background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);font-size:11px;font-weight:700}.shop-action.primary{background:var(--sample);color:#000000;border-color:#000000}.shop-action:disabled{opacity:.5;cursor:not-allowed}.shop-bottom{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}.shop-bottom .shop-action{width:auto;padding:7px 12px}.shop-status{min-height:24px;margin:16px 0 0;font-size:12px;font-weight:700}.shop-open:not(:disabled):hover .shop-wallet-pill{color:inherit}.preview-indicator{margin:14px 0 0;font-size:12px;color:var(--muted)}
+@media(max-width:800px){.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.nav-right{gap:12px}}
+@media(max-width:520px){.shop-body{padding:16px}.shop-header{padding:17px 16px}.shop-header h2{font-size:20px}.shop-grid{gap:10px}.shop-card h3{font-size:12px}.shop-open{gap:6px;padding:6px 8px;font-size:11px}.shop-wallet-pill{padding:0 4px}.theme-sample{height:80px;padding:11px}.shop-card-body{padding:11px 8px}}
+</style>
+</head>
+<body>
+
+<header class="topbar"><div class="wrap nav"><div class="brand"><span class="brand-icon" aria-hidden="true">↗</span><span>PROGRESS<br>TRACKER</span></div><div class="nav-right"><button class="shop-open" id="shopOpen" type="button">테마 상점 <span class="shop-wallet-pill" id="walletBalance">0 P</span></button><button class="nav-button" id="theme" aria-label="어두운 테마로 전환" title="테마 전환">◐</button></div></div></header>
+<main class="wrap">
+<div class="hero"><div><h1 id="title"></h1><p class="subtitle" id="subtitle"></p></div></div>
+<div class="overview" aria-label="프로젝트 진행 현황">
+<div class="progress-card"><div class="metric-title"><span>전체 진행률</span><span class="mono">PROGRESS ↗</span></div><div class="big-number"><span id="percent">0</span><small>%</small></div><div class="bar" id="progress" role="progressbar" aria-label="전체 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="overallBar"></span></div><div class="metric-foot" id="overallText"></div></div>
+<div class="count-card"><div class="metric-title"><span>작업 현황</span><span class="mono">TASKS / ✓</span></div><div class="count-numbers"><div><strong id="doneCount">0</strong><span>완료한 작업</span></div><div><strong id="leftCount">0</strong><span>남은 작업</span></div></div><div class="metric-foot" id="phaseSummary"></div></div>
+<div class="next-card"><div class="metric-title"><span>다음 할 일</span><span class="mono">UP NEXT →</span></div><div class="next-title" id="nextTask"></div><div class="next-phase" id="nextPhase"></div></div></div>
+<section class="calendar-section" aria-labelledby="calendarTitle">
+<h2 id="calendarTitle">업무 캘린더</h2><p class="calendar-intro">날짜를 선택하고 기존 업무를 등록하세요. 업무마다 날짜 하나를 지정할 수 있어요.</p>
+<div class="calendar-layout"><div class="calendar-main"><div class="calendar-nav"><h3 id="calendarMonth" aria-live="polite"></h3><div class="calendar-actions"><button class="calendar-button" id="prevMonth" aria-label="이전 달">←</button><button class="calendar-button" id="today">오늘</button><button class="calendar-button" id="nextMonth" aria-label="다음 달">→</button></div></div><div class="weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="calendar-days" id="calendarDays" role="group" aria-label="날짜 선택"></div></div>
+<div class="calendar-side"><h3 id="selectedDateTitle"></h3><p class="date-caption">등록된 업무의 체크 상태는 프로젝트 보드와 연결됩니다.</p>
+<form class="schedule-form" id="scheduleForm"><label for="scheduleTask">등록할 업무</label><select id="scheduleTask" required></select><label for="scheduleDate">등록 날짜</label><input type="date" id="scheduleDate" required min="0001-01-01" max="9999-12-31"><button class="schedule-submit" id="scheduleSubmit" type="submit">선택한 날짜에 등록</button></form>
+<p class="schedule-status" id="scheduleStatus" role="status"></p><ul class="agenda" id="agenda" aria-label="선택한 날짜의 업무"></ul></div></div></section>
+<div class="board-toolbar"><div class="board-title"><h2>프로젝트 보드</h2><span class="phase-count" id="phaseCount"></span></div><div class="filters" role="group" aria-label="작업 상태 필터"><button class="filter" data-filter="all" aria-pressed="true">전체</button><button class="filter" data-filter="pending" aria-pressed="false">미완료</button><button class="filter" data-filter="done" aria-pressed="false">완료</button></div></div>
+<div class="board" id="phases"></div><div class="bottom-note"><p class="save-note" role="status"><span class="save-dot" aria-hidden="true"></span><span id="saveText">체크 상태와 등록 날짜는 이 브라우저에 저장됩니다.</span></p><button class="reset" id="reset">체크 초기화 ↺</button></div>
+<footer><span class="mono">SMALL STEPS. REAL PROGRESS.</span><span class="mono" id="updated"></span></footer></main>
+
+<dialog class="celebration" id="celebration" aria-labelledby="celebrationTitle" aria-describedby="celebrationSummary">
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+<div class="celebration-card"><div class="celebration-mark" aria-hidden="true">✓</div><h2 id="celebrationTitle">프로젝트 완료!</h2><p id="celebrationSummary"></p><button class="celebration-close" id="celebrationClose" type="button" autofocus>닫기</button></div>
+</dialog>
+
+<dialog class="shop-dialog" id="themeShop" aria-labelledby="shopTitle" aria-describedby="shopHelp">
+<div class="shop-header"><h2 id="shopTitle">테마 상점</h2><button class="shop-close" id="shopClose" aria-label="테마 상점 닫기" type="button" autofocus>×</button></div>
+<div class="shop-body"><div class="shop-balance"><span>보유 포인트</span><strong id="shopBalance">0 P</strong></div><p class="shop-help" id="shopHelp">보유 포인트로 테마를 구매하세요. 구매한 테마는 계속 사용할 수 있어요.</p>
+<div class="shop-grid" id="shopItems"></div>
+<div class="shop-bottom"><span class="shop-help">기본 네온 라임은 무료예요.</span><button class="shop-action" id="defaultTheme" type="button">기본 테마 적용</button></div>
+<p class="preview-indicator" id="previewIndicator"></p><p class="shop-status" id="shopStatus" role="status"></p><p class="shop-help">포인트 적립 기능은 추후 연결됩니다. 현재는 저장된 잔액으로 구매할 수 있어요.</p></div>
+</dialog>
+<!-- DATA: 이 JSON 블록만 교체합니다. done은 기본값이며 브라우저 체크 상태가 우선합니다. -->
+<script id="data" type="application/json">
+{
+  "project": "AI PET",
+  "subtitle": "스마트폰 로컬 AI 반려인형 — 대표 시나리오 SC-00 오프라인 시연이 목표",
+  "updated": "2026-11-04",
+  "phases": [
+    {
+      "title": "0. 설계",
+      "description": "시나리오, 구조·인터페이스, 요구사항·정책 (docs/)",
+      "tasks": [
+        {
+          "id": "design-golden",
+          "text": "대표 시나리오 SC-00 작성",
+          "done": true
+        },
+        {
+          "id": "design-detail",
+          "text": "세부 시나리오 16개 + 상태 머신·플로우차트 작성",
+          "done": true
+        },
+        {
+          "id": "design-arch",
+          "text": "레이어 구조·인터페이스·JSON 예시 작성",
+          "done": true
+        },
+        {
+          "id": "design-req",
+          "text": "기능·비기능 요구사항, 범위, 정책 작성",
+          "done": true
+        },
+        {
+          "id": "design-mcp",
+          "text": "MCP 해석(LLM 도구 호출 규격) 확정",
+          "note": "layers.md 상단 해석 전제 확인"
+        },
+        {
+          "id": "design-review",
+          "text": "설계 문서 최종 검토 후 제출"
+        }
+      ]
+    },
+    {
+      "title": "1. 개발 환경",
+      "tasks": [
+        {
+          "id": "env-scaffold",
+          "text": "Android Kotlin/Compose 프로젝트 기본 틀 생성",
+          "done": true
+        },
+        {
+          "id": "env-repo",
+          "text": "GitHub 레포 연결 + 첫 커밋",
+          "done": true
+        },
+        {
+          "id": "env-build",
+          "text": "Android Studio에서 빌드·실행 확인",
+          "note": "에뮬레이터(API 37, x86_64)에서 에코 채팅 동작 확인",
+          "done": true
+        },
+        {
+          "id": "env-device",
+          "text": "테스트 휴대폰 확정 및 사양(RAM·칩셋) 기록"
+        }
+      ]
+    },
+    {
+      "title": "2. 로컬 LLM 텍스트 대화",
+      "description": "FR-01, FR-05 / NFR-03, NFR-04",
+      "tasks": [
+        {
+          "id": "llm-jni",
+          "text": "llama.cpp Android 빌드 + JNI 연결"
+        },
+        {
+          "id": "llm-qwen17",
+          "text": "Qwen3-1.7B(Q4_K_M)로 LlmEngine 구현"
+        },
+        {
+          "id": "llm-stream",
+          "text": "토큰 스트리밍 채팅 화면 표시"
+        },
+        {
+          "id": "llm-persona",
+          "text": "성격 프롬프트 적용, 반말·2문장 이내 확인"
+        },
+        {
+          "id": "llm-context",
+          "text": "최근 10턴 대화 맥락 관리"
+        },
+        {
+          "id": "llm-measure",
+          "text": "첫 토큰 시간·토큰/초·RAM 측정"
+        },
+        {
+          "id": "llm-qwen4",
+          "text": "Qwen3-4B와 품질·속도 비교 후 모델 확정"
+        }
+      ]
+    },
+    {
+      "title": "3. 음성 대화",
+      "description": "FR-02~04, FR-18 / NFR-01",
+      "tasks": [
+        {
+          "id": "voice-bt",
+          "text": "블루투스 헤드셋 양방향 오디오 테스트"
+        },
+        {
+          "id": "voice-vad",
+          "text": "Silero VAD로 발화 시작·끝 감지"
+        },
+        {
+          "id": "voice-stt",
+          "text": "SenseVoice STT 연결 + 신뢰도 기반 재요청"
+        },
+        {
+          "id": "voice-tts",
+          "text": "Supertonic TTS 문장 단위 스트리밍 출력"
+        },
+        {
+          "id": "voice-pipeline",
+          "text": "버튼 → STT → LLM → TTS 연결, 상태 머신 구현"
+        },
+        {
+          "id": "voice-latency",
+          "text": "발화 종료 → 첫 음성 3초 목표 측정"
+        },
+        {
+          "id": "voice-barge",
+          "text": "끼어들기(재생 중단 + 생성 취소)"
+        }
+      ]
+    },
+    {
+      "title": "4. 기억과 성격",
+      "description": "FR-11~14, FR-19, FR-20",
+      "tasks": [
+        {
+          "id": "mem-db",
+          "text": "Room DB 테이블 + FTS 구성"
+        },
+        {
+          "id": "mem-intent",
+          "text": "의도 분류기(규칙 기반) 구현"
+        },
+        {
+          "id": "mem-extract",
+          "text": "턴 종료 후 기억 추출·중복 판단(MemoryProcessor)"
+        },
+        {
+          "id": "mem-search",
+          "text": "기억 검색 결과를 프롬프트에 반영"
+        },
+        {
+          "id": "mem-ui",
+          "text": "기억 조회·삭제·전체 초기화 화면"
+        },
+        {
+          "id": "mem-voice-delete",
+          "text": "음성 기억 삭제 + 확인 질문"
+        },
+        {
+          "id": "mem-conflict",
+          "text": "기억 충돌 시 확인 후 수정"
+        },
+        {
+          "id": "mem-petstate",
+          "text": "PetState 저장·갱신·화면 표시"
+        }
+      ]
+    },
+    {
+      "title": "5. 시각 인식 (대표 시나리오 완성)",
+      "description": "FR-07~10 / NFR-02, NFR-06, NFR-07",
+      "tasks": [
+        {
+          "id": "vis-camera",
+          "text": "휴대폰 카메라 촬영 + 품질 검사(밝기·흔들림)"
+        },
+        {
+          "id": "vis-vlm",
+          "text": "Qwen3-VL-2B 로컬 실행 + 이미지 설명"
+        },
+        {
+          "id": "vis-embed",
+          "text": "이미지 임베딩 모델 선정·연결"
+        },
+        {
+          "id": "vis-memory",
+          "text": "시각 기억 저장(썸네일·벡터) + 장기 기억 연결"
+        },
+        {
+          "id": "vis-match",
+          "text": "유사도 매칭 + 애매할 때 확인 질문"
+        },
+        {
+          "id": "vis-threshold",
+          "text": "T_high / T_low 실측으로 확정"
+        },
+        {
+          "id": "vis-golden",
+          "text": "SC-00 비행기 모드 전체 시연 성공"
+        }
+      ]
+    },
+    {
+      "title": "6. 안정화와 시연 준비",
+      "description": "FR-15~17, FR-21 / NFR-11~14, NFR-21~25",
+      "tasks": [
+        {
+          "id": "qa-errors",
+          "text": "SC-11~16 예외 시나리오 검증"
+        },
+        {
+          "id": "qa-ambiguous",
+          "text": "SC-21~25 불명확 요청 검증"
+        },
+        {
+          "id": "qa-state-ui",
+          "text": "대화 상태·카메라 사용 표시"
+        },
+        {
+          "id": "qa-30min",
+          "text": "30분 연속 대화 안정성·발열·배터리 측정"
+        },
+        {
+          "id": "qa-privacy",
+          "text": "원본 음성·사진 미저장, 네트워크 전송 0건 확인"
+        },
+        {
+          "id": "qa-demo",
+          "text": "시연 리허설 + 시연 물건 준비"
+        }
+      ]
+    },
+    {
+      "title": "7. 확장 (Could)",
+      "description": "여유 있을 때만 — FR-23~26",
+      "tasks": [
+        {
+          "id": "ext-proactive",
+          "text": "일정 기억 + 능동 대화"
+        },
+        {
+          "id": "ext-wakeword",
+          "text": "호출어 인식"
+        },
+        {
+          "id": "ext-hw",
+          "text": "ESP32-S3 인형 모듈 프로토타입 연결"
+        },
+        {
+          "id": "ext-touch",
+          "text": "터치 센서 반응"
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script>
+
+(function () {
+  var data = JSON.parse(document.getElementById('data').textContent);
+  var KEY = 'progress-tracker:' + data.project;
+  function load(key, strict) {
+    try {
+      var raw = localStorage.getItem(key || KEY);
+      if (raw === null) return strict ? null : {};
+      var saved = JSON.parse(raw);
+      if (saved && typeof saved === 'object' && !Array.isArray(saved)) return saved;
+      if (strict) throw new Error('Invalid stored data');
+      return {};
+    } catch (e) { if (strict) throw e; return {}; }
+  }
+  function save(state, key) {
+    try { localStorage.setItem(key || KEY, JSON.stringify(state)); document.getElementById('saveText').textContent = '변경 사항을 이 브라우저에 저장했어요.'; return true; }
+    catch (e) { document.getElementById('saveText').textContent = '브라우저 저장을 사용할 수 없어 새로고침하면 변경 사항이 사라질 수 있어요.'; return false; }
+  }
+  function isDone(task, state) { return Object.prototype.hasOwnProperty.call(state, task.id) ? !!state[task.id] : !!task.done; }
+  var state = load(), collapsed = {}, filter = 'all';
+  var DATE_KEY = KEY + ':dates';
+  var dates = load(DATE_KEY);
+  var taskEntries = [];
+  data.phases.forEach(function(phase) { phase.tasks.forEach(function(task) { taskEntries.push({task:task, phase:phase}); }); });
+  function dateKey(date) { return String(date.getFullYear()).padStart(4, '0') + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0'); }
+  function parseDate(value) {
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+    var date = new Date(2000, 0, 1); date.setHours(12, 0, 0, 0); date.setFullYear(Number(value.slice(0,4)), Number(value.slice(5,7))-1, Number(value.slice(8,10)));
+    return date.getFullYear() > 0 && dateKey(date) === value ? date : null;
+  }
+  function taskDate(task) {
+    var value = Object.prototype.hasOwnProperty.call(dates, task.id) ? dates[task.id] : task.date;
+    return parseDate(value) ? value : '';
+  }
+  var selectedDate = dateKey(new Date());
+  var monthDate = parseDate(selectedDate); monthDate.setDate(1);
+  function setDone(task, checked) { state[task.id] = checked; save(state); render(); }
+  var colors = ['var(--lime)'];
+  function el(tag, cls, value) { var node = document.createElement(tag); if (cls) node.className = cls; if (value !== undefined) node.textContent = value; return node; }
+  document.title = data.project + ' · Progress Tracker';
+  document.getElementById('title').textContent = data.project;
+  document.getElementById('subtitle').textContent = data.subtitle || '';
+  document.getElementById('updated').textContent = data.updated ? 'UPDATED / ' + data.updated : '';
+  // One wallet for every project on the same browser origin. Purchases and ownership are saved together.
+  var WALLET_KEY = 'progress-tracker:wallet:v1';
+  var themeCatalog = [
+    {id:'pink', name:'네온 핑크', color:'#ff7de9', price:100},
+    {id:'red', name:'빨강', color:'#ff6666', price:100},
+    {id:'orange', name:'오렌지', color:'#ffae66', price:100},
+    {id:'blue', name:'파랑', color:'#6aa9ff', price:100}
+  ];
+  var wallet = null, previewTheme = null, shopBusy = false;
+  var shop = document.getElementById('themeShop');
+  function themeById(id) { return themeCatalog.find(function(theme) { return theme.id === id; }); }
+  function readWallet() {
+    var value = load(WALLET_KEY, true);
+    if (value === null) return {version:1, balance:0, owned:[], activeTheme:'lime'};
+    if (value.version !== 1 || !Number.isSafeInteger(value.balance) || value.balance < 0 || !Array.isArray(value.owned) || value.owned.some(function(id) { return !themeById(id); }) || new Set(value.owned).size !== value.owned.length || (value.activeTheme !== 'lime' && value.owned.indexOf(value.activeTheme) === -1)) throw new Error('Invalid wallet');
+    return value;
+  }
+  function applyTheme(id) {
+    var theme = themeById(id);
+    document.documentElement.style.setProperty('--lime', theme ? theme.color : '#edff55');
+  }
+  function refreshWallet() {
+    try { wallet = readWallet(); }
+    catch (e) { wallet = null; document.getElementById('shopStatus').textContent = '포인트 정보를 읽을 수 없어요. 저장된 데이터는 변경하지 않았어요.'; }
+    applyTheme(previewTheme || (wallet ? wallet.activeTheme : 'lime'));
+    renderShop();
+  }
+  function renderShop() {
+    var balance = wallet ? wallet.balance.toLocaleString('ko-KR') + ' P' : '— P';
+    document.getElementById('walletBalance').textContent = balance;
+    document.getElementById('shopBalance').textContent = balance;
+    var root = document.getElementById('shopItems'); root.replaceChildren();
+    themeCatalog.forEach(function(theme) {
+      var owned = wallet && wallet.owned.indexOf(theme.id) !== -1;
+      var active = wallet && wallet.activeTheme === theme.id;
+      var card = el('article', 'shop-card'); card.style.setProperty('--sample', theme.color);
+      var sample = el('div', 'theme-sample'); sample.setAttribute('aria-hidden','true'); sample.appendChild(el('span','sample-heading')); sample.appendChild(el('span','sample-lines')); card.appendChild(sample);
+      var body = el('div','shop-card-body'); body.appendChild(el('h3','',theme.name)); body.appendChild(el('p','theme-price', active ? '적용 중' : owned ? '구매 완료' : theme.price + ' P'));
+      var actions = el('div','theme-actions');
+      var preview = el('button','shop-action','미리보기'); preview.type = 'button'; preview.id = 'preview-' + theme.id; preview.setAttribute('aria-pressed',String(previewTheme === theme.id)); preview.setAttribute('aria-label',theme.name + ' 미리보기');
+      preview.onclick = function() { previewTheme = previewTheme === theme.id ? null : theme.id; applyTheme(previewTheme || (wallet ? wallet.activeTheme : 'lime')); renderShop(); document.getElementById(preview.id).focus({preventScroll:true}); };
+      var action = el('button','shop-action primary', active ? '적용 중' : owned ? '적용하기' : wallet && wallet.balance < theme.price ? '포인트 부족' : '100 P로 구매');
+      action.type = 'button'; action.id = 'buy-' + theme.id; action.disabled = shopBusy || !wallet || (active && !previewTheme) || (!owned && wallet.balance < theme.price); action.setAttribute('aria-label',theme.name + ' ' + action.textContent);
+      action.onclick = function() { return transactTheme(theme.id); };
+      actions.appendChild(preview); actions.appendChild(action); body.appendChild(actions); card.appendChild(body); root.appendChild(card);
+    });
+    document.getElementById('defaultTheme').disabled = shopBusy || !wallet || (wallet.activeTheme === 'lime' && !previewTheme);
+    document.getElementById('previewIndicator').textContent = previewTheme ? themeById(previewTheme).name + ' 미리보기 중 · 상점을 닫으면 원래 테마로 돌아갑니다.' : '';
+  }
+  async function transactTheme(id) {
+    if (shopBusy) return;
+    shopBusy = true; renderShop();
+    var buttonId = id === 'lime' ? 'defaultTheme' : 'buy-' + id;
+    function commit() {
+      var fresh = readWallet(), next = Object.assign({},fresh,{owned:fresh.owned.slice()});
+      var theme = id === 'lime' ? null : themeById(id);
+      if (id !== 'lime' && !theme) throw new Error('Unknown theme');
+      var purchase = theme && next.owned.indexOf(id) === -1;
+      if (purchase) {
+        if (next.balance < theme.price) { document.getElementById('shopStatus').textContent = '포인트가 부족해요.'; return; }
+        next.balance -= theme.price; next.owned.push(id);
+      }
+      next.activeTheme = id;
+      if (!save(next,WALLET_KEY)) { document.getElementById('shopStatus').textContent = '저장하지 못했어요. 포인트 차감과 구매는 반영되지 않았어요.'; return; }
+      previewTheme = null;
+      document.getElementById('shopStatus').textContent = purchase ? theme.name + ' 테마를 구매하고 적용했어요.' : (theme ? theme.name : '기본 네온 라임') + ' 테마를 적용했어요.';
+    }
+    try {
+      if (navigator.locks && navigator.locks.request) await navigator.locks.request(WALLET_KEY,commit);
+      else commit();
+    } catch (e) { document.getElementById('shopStatus').textContent = '포인트 정보를 확인할 수 없어 구매하지 않았어요.'; }
+    finally { shopBusy = false; refreshWallet(); var target = document.getElementById(buttonId); if (target && !target.disabled) target.focus({preventScroll:true}); else document.getElementById('shopClose').focus({preventScroll:true}); }
+  }
+  document.getElementById('shopOpen').onclick = function() { document.getElementById('shopStatus').textContent = ''; previewTheme = null; refreshWallet(); if (!shop.open) shop.showModal(); };
+  document.getElementById('shopClose').onclick = function() { shop.close(); };
+  shop.addEventListener('close',function() { previewTheme = null; refreshWallet(); });
+  document.getElementById('defaultTheme').onclick = function() { return transactTheme('lime'); };
+  window.addEventListener('storage',function(event) { if (event.key === WALLET_KEY || event.key === null) refreshWallet(); });
+  refreshWallet();
+  var wasComplete = null, confettiTimer = null;
+  var celebration = document.getElementById('celebration');
+  function clearConfetti() {
+    clearTimeout(confettiTimer); confettiTimer = null;
+    document.getElementById('confetti').replaceChildren();
+  }
+  function celebrate(total) {
+    document.getElementById('celebrationSummary').textContent = total + '개 업무를 모두 완료했어요. 수고했어요!';
+    if (!celebration.open) celebration.showModal();
+    clearConfetti();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var layer = document.getElementById('confetti');
+    var palette = ['var(--lime)', 'var(--lime)', '#ffffff', '#bdbdbd', '#000000'];
+    for (var i = 0; i < 80; i++) {
+      var piece = el('span', 'confetti-piece');
+      var values = {'--x':Math.random()*100+'%', '--w':5+Math.random()*6+'px', '--h':8+Math.random()*9+'px', '--color':palette[i%palette.length], '--duration':2.4+Math.random()*1.4+'s', '--delay':Math.random()*.7+'s', '--drift':(Math.random()-.5)*32+'vw', '--spin':(Math.random()-.5)*1440+'deg'};
+      Object.keys(values).forEach(function(key) { piece.style.setProperty(key, values[key]); });
+      layer.appendChild(piece);
+    }
+    confettiTimer = setTimeout(clearConfetti, 5000);
+  }
+  function updateCelebration(total, done) {
+    var complete = total > 0 && done === total;
+    if (wasComplete === false && complete) celebrate(total);
+    wasComplete = complete;
+  }
+  document.getElementById('celebrationClose').onclick = function() { celebration.close(); };
+  celebration.addEventListener('close', clearConfetti);
+  function render() {
+    var focusId = document.activeElement && document.activeElement.id;
+    var root = document.getElementById('phases'); root.replaceChildren();
+    var total = 0, done = 0, completedPhases = 0, next = null;
+    data.phases.forEach(function (phase, pi) {
+      var pDone = phase.tasks.filter(function(t) { return isDone(t, state); }).length;
+      var pTotal = phase.tasks.length;
+      total += pTotal; done += pDone;
+      if (pTotal && pDone === pTotal) completedPhases++;
+      if (!next) { var task = phase.tasks.find(function(t) { return !isDone(t, state); }); if (task) next = { task:task, phase:phase }; }
+      var sec = el('section', 'phase'); sec.style.setProperty('--phase-color', colors[pi % colors.length]);
+      var heading = el('div', 'phase-heading');
+      var meta = el('div', 'phase-meta'); meta.appendChild(el('span', 'phase-no', 'PHASE ' + String(pi + 1).padStart(2, '0')));
+      meta.appendChild(el('span', 'badge', pTotal && pDone === pTotal ? '완료 ✓' : pDone ? '진행 중 ↗' : '시작 전'));
+      heading.appendChild(meta);
+      var h = el('h3'); h.style.margin = '0';
+      var toggle = el('button', 'phase-toggle'); toggle.id = 'phase-toggle-' + pi;
+      toggle.setAttribute('aria-expanded', String(!collapsed[pi])); toggle.setAttribute('aria-controls', 'phase-tasks-' + pi);
+      toggle.appendChild(el('span', '', phase.title)); toggle.appendChild(el('span', 'chevron', collapsed[pi] ? '+' : '−'));
+      toggle.onclick = function () { collapsed[pi] = !collapsed[pi]; render(); };
+      h.appendChild(toggle); heading.appendChild(h);
+      if (phase.description) heading.appendChild(el('p', 'desc', phase.description));
+      sec.appendChild(heading);
+      var ul = el('ul', 'tasks'); ul.id = 'phase-tasks-' + pi; ul.hidden = !!collapsed[pi];
+      var visible = 0;
+      phase.tasks.forEach(function (task) {
+        var checked = isDone(task, state);
+        if ((filter === 'done' && !checked) || (filter === 'pending' && checked)) return;
+        visible++;
+        var li = el('li', 'task' + (checked ? ' checked' : ''));
+        var cb = el('input'); cb.type = 'checkbox'; cb.id = 't-' + task.id; cb.checked = checked;
+        cb.onchange = function () { setDone(task, cb.checked); };
+        var label = el('label'); label.htmlFor = cb.id; label.appendChild(el('span', 'task-text', task.text));
+        if (task.note) label.appendChild(el('span', 'note', task.note));
+        var body = el('div', 'task-body'); body.appendChild(label);
+        var dateButton = el('button', 'task-date' + (taskDate(task) ? ' scheduled' : ''), taskDate(task) || '+ 날짜 등록');
+        dateButton.id = 'task-date-' + task.id;
+        dateButton.setAttribute('aria-label', task.text + ' 날짜 ' + (taskDate(task) || '등록'));
+        dateButton.onclick = function() {
+          document.getElementById('scheduleTask').value = task.id;
+          selectedDate = taskDate(task) || selectedDate; monthDate = parseDate(selectedDate); monthDate.setDate(1);
+          renderCalendar(); document.getElementById('scheduleDate').focus(); document.getElementById('calendarTitle').scrollIntoView({behavior:'auto', block:'start'});
+        };
+        body.appendChild(dateButton); li.appendChild(cb); li.appendChild(body); ul.appendChild(li);
+      });
+      if (!visible) ul.appendChild(el('li', 'empty', pTotal ? '이 조건에 맞는 작업이 없어요.' : '아직 등록된 작업이 없어요.'));
+      sec.appendChild(ul);
+      var foot = el('div', 'phase-footer'); foot.appendChild(el('span', '', pDone + ' / ' + pTotal + ' 완료'));
+      var bar = el('div', 'mini-bar'); bar.setAttribute('aria-hidden', 'true'); var fill = el('span'); fill.style.width = (pTotal ? pDone / pTotal * 100 : 0) + '%'; bar.appendChild(fill); foot.appendChild(bar); sec.appendChild(foot); root.appendChild(sec);
+    });
+    if (!data.phases.length) root.appendChild(el('p', 'empty', '등록된 단계가 없어요. 프로젝트의 첫 단계를 추가해보세요.'));
+    var pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('percent').textContent = pct;
+    document.getElementById('overallBar').style.width = pct + '%';
+    document.getElementById('progress').setAttribute('aria-valuenow', String(pct));
+    document.getElementById('overallText').textContent = done + ' / ' + total + '개 작업 완료';
+    document.getElementById('doneCount').textContent = done;
+    document.getElementById('leftCount').textContent = total - done;
+    document.getElementById('phaseSummary').textContent = data.phases.length + '개 단계 중 ' + completedPhases + '개 완료';
+    document.getElementById('phaseCount').textContent = String(data.phases.length).padStart(2, '0');
+    document.getElementById('nextTask').textContent = next ? next.task.text : total ? '모든 작업을 완료했어요! 🎉' : '첫 번째 작업을 기다리는 중';
+    document.getElementById('nextPhase').textContent = next ? next.phase.title : total ? '하나씩 쌓아온 결과예요. 수고했어요.' : '프로젝트 데이터를 채워 시작해보세요.';
+    renderCalendar();
+    if (focusId) { var target = document.getElementById(focusId); if (target) target.focus({preventScroll:true}); else if (focusId.indexOf('t-') === 0) document.querySelector('.filter[aria-pressed="true"]').focus({preventScroll:true}); }
+    updateCelebration(total, done);
+  }
+  var taskSelect = document.getElementById('scheduleTask');
+  var placeholder = el('option', '', taskEntries.length ? '업무를 선택하세요' : '먼저 프로젝트에 업무를 추가하세요'); placeholder.value = ''; taskSelect.appendChild(placeholder);
+  taskEntries.forEach(function(entry) { var option = el('option', '', entry.phase.title + ' · ' + entry.task.text); option.value = entry.task.id; taskSelect.appendChild(option); });
+  taskSelect.disabled = !taskEntries.length; document.getElementById('scheduleSubmit').disabled = !taskEntries.length;
+  function renderCalendar() {
+    var year = monthDate.getFullYear(), month = monthDate.getMonth();
+    document.getElementById('calendarMonth').textContent = year + '년 ' + (month + 1) + '월';
+    document.getElementById('prevMonth').disabled = year === 1 && month === 0;
+    document.getElementById('nextMonth').disabled = year === 9999 && month === 11;
+    var root = document.getElementById('calendarDays'); root.replaceChildren();
+    var start = new Date(monthDate); start.setDate(1);
+    var last = new Date(monthDate); last.setMonth(month + 1, 0);
+    var days = last.getDate(), offset = start.getDay(), slots = Math.ceil((offset + days) / 7) * 7;
+    var byDate = Object.create(null);
+    taskEntries.forEach(function(entry) { var key = taskDate(entry.task); if (key) { if (!byDate[key]) byDate[key] = []; byDate[key].push(entry); } });
+    for (var i = 0; i < slots; i++) {
+      var day = i - offset + 1;
+      if (day < 1 || day > days) { var blank = el('div', 'day blank'); blank.setAttribute('aria-hidden','true'); root.appendChild(blank); continue; }
+      var date = new Date(monthDate); date.setDate(day); var key = dateKey(date);
+      var entries = byDate[key] || [];
+      var button = el('button', 'day'); button.id = 'day-' + key; button.type = 'button';
+      button.setAttribute('aria-pressed', String(key === selectedDate));
+      button.setAttribute('aria-label', key + ', 업무 ' + entries.length + '개');
+      if (key === dateKey(new Date())) button.setAttribute('aria-current','date');
+      button.appendChild(el('span','day-number',day));
+      if (entries.length) { button.appendChild(el('span','day-count', entries.length + '개 업무')); button.appendChild(el('span','day-preview',entries[0].task.text)); }
+      button.onclick = (function(value) { return function() { selectedDate = value; document.getElementById('scheduleStatus').textContent = ''; renderCalendar(); document.getElementById('day-' + value).focus({preventScroll:true}); }; })(key);
+      root.appendChild(button);
+    }
+    document.getElementById('scheduleDate').value = selectedDate;
+    var selected = parseDate(selectedDate);
+    document.getElementById('selectedDateTitle').textContent = selected.getFullYear() + '년 ' + (selected.getMonth()+1) + '월 ' + selected.getDate() + '일';
+    var agenda = document.getElementById('agenda'); agenda.replaceChildren();
+    var scheduled = byDate[selectedDate] || [];
+    scheduled.forEach(function(entry) {
+      var task = entry.task, checked = isDone(task,state);
+      var item = el('li','agenda-item' + (checked ? ' done' : ''));
+      var cb = el('input'); cb.type = 'checkbox'; cb.id = 'agenda-' + task.id; cb.checked = checked; cb.onchange = function() { setDone(task,cb.checked); };
+      var label = el('label'); label.htmlFor = cb.id; label.appendChild(el('span','agenda-text',task.text)); label.appendChild(el('small','',entry.phase.title));
+      var remove = el('button','remove-date','해제'); remove.type = 'button'; remove.id = 'remove-date-' + task.id; remove.setAttribute('aria-label',task.text + ' 날짜 해제');
+      remove.onclick = function() { dates[task.id] = ''; save(dates,DATE_KEY); document.getElementById('scheduleStatus').textContent = '날짜 등록을 해제했어요. 업무는 보드에 유지됩니다.'; render(); document.getElementById('scheduleTask').focus(); };
+      item.appendChild(cb); item.appendChild(label); item.appendChild(remove); agenda.appendChild(item);
+    });
+    if (!scheduled.length) agenda.appendChild(el('li','empty','이 날짜에 등록된 업무가 없어요.'));
+  }
+  function moveMonth(delta) { monthDate.setMonth(monthDate.getMonth() + delta); renderCalendar(); }
+  document.getElementById('prevMonth').onclick = function() { moveMonth(-1); };
+  document.getElementById('nextMonth').onclick = function() { moveMonth(1); };
+  document.getElementById('today').onclick = function() { selectedDate = dateKey(new Date()); monthDate = parseDate(selectedDate); monthDate.setDate(1); renderCalendar(); };
+  document.getElementById('scheduleForm').onsubmit = function(event) {
+    event.preventDefault();
+    var entry = taskEntries.find(function(entry) { return entry.task.id === taskSelect.value; });
+    var value = document.getElementById('scheduleDate').value;
+    if (!entry || !parseDate(value)) { document.getElementById('scheduleStatus').textContent = '업무와 올바른 날짜를 선택하세요.'; return; }
+    dates[entry.task.id] = value; selectedDate = value; monthDate = parseDate(value); monthDate.setDate(1);
+    save(dates,DATE_KEY); render(); document.getElementById('scheduleStatus').textContent = '선택한 업무를 ' + value + '에 등록했어요.';
+  };
+  document.querySelectorAll('.filter').forEach(function(button) {
+    button.onclick = function() { filter = button.dataset.filter; document.querySelectorAll('.filter').forEach(function(b) { b.setAttribute('aria-pressed', String(b === button)); }); render(); };
+  });
+  document.getElementById('reset').onclick = function () {
+    if (confirm('체크 상태만 파일의 기본값으로 되돌릴까요? 등록한 날짜는 유지됩니다.')) { state = {}; save(state); render(); }
+  };
+  document.getElementById('theme').onclick = function () {
+    var dark = document.documentElement.dataset.theme !== 'dark'; document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    this.setAttribute('aria-label', dark ? '밝은 테마로 전환' : '어두운 테마로 전환');
+  };
+  render();
+})();
+</script>
+</body>
+</html>

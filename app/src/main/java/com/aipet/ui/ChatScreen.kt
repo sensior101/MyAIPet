@@ -17,7 +17,8 @@ fun ChatScreen(vm: ChatViewModel = viewModel()) {
     val busy by vm.busy.collectAsState()
     var input by remember { mutableStateOf("") }
 
-    Column(Modifier.fillMaxSize().systemBarsPadding().padding(12.dp)) {
+    // safeDrawingPadding: 시스템바 + 키보드(IME) 영역을 모두 피함
+    Column(Modifier.fillMaxSize().safeDrawingPadding().padding(12.dp)) {
         LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(messages) { msg ->
                 val mine = msg.role == ChatMessage.Role.USER
