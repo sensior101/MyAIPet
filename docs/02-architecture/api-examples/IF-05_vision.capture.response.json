@@ -1,0 +1,17 @@
+{
+  "jsonrpc": "2.0",
+  "id": "req-0007",
+  "result": {
+    "isError": false,
+    "structuredContent": {
+      "imageId": "img-20261104-0002",
+      "source": "PHONE_CAMERA",
+      "width": 640,
+      "height": 480,
+      "brightness": 0.62,
+      "sharpness": 0.81,
+      "quality": "OK"
+    },
+    "_meta": { "latencyMs": 412 }
+  }
+}

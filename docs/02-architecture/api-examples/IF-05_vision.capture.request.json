@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": "req-0007",
+  "method": "tools/call",
+  "params": {
+    "name": "vision.capture",
+    "arguments": { "resolution": "VGA" },
+    "_meta": { "turnId": "turn-20261104-0002", "timeoutMs": 3000 }
+  }
+}

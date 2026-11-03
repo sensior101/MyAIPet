@@ -1,0 +1,9 @@
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+captures/
+# 모델 파일은 용량이 커서 커밋하지 않음
+*.gguf
+*.onnx

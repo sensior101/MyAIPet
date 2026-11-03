@@ -1,0 +1,236 @@
+{
+  "project": "AI PET",
+  "version": "0.1.0-draft",
+  "note": "설계 초안. 구현 완료된 것은 status=implemented, 나머지는 planned.",
+
+  "app_modules": {
+    "ai": {
+      "LlmEngine": {
+        "status": "implemented(stub: EchoLlmEngine)",
+        "phase": 1,
+        "methods": {
+          "load": { "params": { "modelPath": "String", "contextSize": "Int" }, "returns": "Unit", "async": true },
+          "generate": { "params": { "systemPrompt": "String", "history": "List<ChatMessage>" }, "returns": "String", "async": true },
+          "generateStream": { "params": { "systemPrompt": "String", "history": "List<ChatMessage>" }, "returns": "Flow<String>", "note": "토큰 단위 스트리밍" },
+          "unload": { "params": {}, "returns": "Unit" }
+        },
+        "impl_candidates": ["llama.cpp + Qwen3-1.7B", "llama.cpp + Qwen3-4B"]
+      },
+      "VisionEngine": {
+        "status": "planned",
+        "phase": 5,
+        "methods": {
+          "describe": { "params": { "image": "Bitmap", "question": "String?" }, "returns": "String", "async": true },
+          "embed": { "params": { "image": "Bitmap" }, "returns": "FloatArray", "note": "시각 기억 비교용 특징 벡터" }
+        },
+        "impl_candidates": ["Qwen3-VL-2B"]
+      },
+      "PromptManager": {
+        "status": "planned",
+        "phase": 4,
+        "methods": {
+          "build": {
+            "params": { "personality": "String", "petState": "PetState", "memories": "List<Memory>", "history": "List<ChatMessage>", "userInput": "String" },
+            "returns": "String"
+          }
+        }
+      }
+    },
+
+    "audio": {
+      "Vad": {
+        "status": "planned", "phase": 3,
+        "methods": { "process": { "params": { "pcm": "ShortArray" }, "returns": "VadEvent" } },
+        "events": ["SPEECH_START", "SPEECH_END", "SILENCE"],
+        "impl_candidates": ["Silero VAD"]
+      },
+      "SttEngine": {
+        "status": "planned", "phase": 3,
+        "methods": { "transcribe": { "params": { "pcm": "ShortArray", "sampleRate": "Int" }, "returns": "SttResult", "async": true } },
+        "impl_candidates": ["SenseVoice", "Korean Zipformer", "Whisper"]
+      },
+      "TtsEngine": {
+        "status": "planned", "phase": 3,
+        "methods": {
+          "synthesize": { "params": { "text": "String", "voiceId": "String" }, "returns": "ShortArray", "async": true },
+          "speakStream": { "params": { "sentences": "Flow<String>" }, "returns": "Unit", "note": "문장 단위 스트리밍 출력" },
+          "stop": { "params": {}, "returns": "Unit", "note": "끼어들기 시 중단" }
+        },
+        "impl_candidates": ["Supertonic-3-ko (sherpa-onnx)"]
+      },
+      "AudioRouter": {
+        "status": "planned", "phase": 2,
+        "methods": {
+          "selectInput": { "params": { "device": "AudioDevice" }, "returns": "Boolean" },
+          "selectOutput": { "params": { "device": "AudioDevice" }, "returns": "Boolean" },
+          "devices": { "params": {}, "returns": "StateFlow<List<AudioDevice>>" }
+        }
+      }
+    },
+
+    "memory": {
+      "MemoryRepository": {
+        "status": "planned", "phase": 4,
+        "methods": {
+          "add": { "params": { "memory": "Memory" }, "returns": "Long" },
+          "update": { "params": { "memory": "Memory" }, "returns": "Unit" },
+          "delete": { "params": { "id": "Long" }, "returns": "Unit" },
+          "deleteAll": { "params": {}, "returns": "Unit" },
+          "search": { "params": { "query": "String", "limit": "Int" }, "returns": "List<Memory>", "note": "초기 SQLite FTS" },
+          "observeAll": { "params": {}, "returns": "Flow<List<Memory>>" }
+        }
+      },
+      "MemoryExtractor": {
+        "status": "planned", "phase": 4,
+        "methods": {
+          "extract": { "params": { "turn": "List<ChatMessage>" }, "returns": "List<MemoryCandidate>", "async": true, "note": "응답 생성과 비동기 처리" }
+        }
+      },
+      "MemoryManager": {
+        "status": "planned", "phase": 4,
+        "methods": {
+          "commit": { "params": { "candidate": "MemoryCandidate" }, "returns": "MemoryDecision", "note": "중복/충돌 확인 후 추가·수정·보류" }
+        }
+      }
+    },
+
+    "pet": {
+      "Personality": { "status": "implemented", "phase": 1, "fields": { "systemPrompt": "String" } },
+      "PetStateStore": {
+        "status": "planned", "phase": 4,
+        "methods": {
+          "state": { "params": {}, "returns": "StateFlow<PetState>" },
+          "apply": { "params": { "event": "InteractionEvent" }, "returns": "PetState" }
+        }
+      },
+      "InteractionManager": {
+        "status": "planned", "phase": 8,
+        "methods": {
+          "onEvent": { "params": { "event": "InteractionEvent" }, "returns": "Unit" },
+          "scheduleProactive": { "params": { "memory": "Memory", "at": "Instant" }, "returns": "Unit", "note": "능동 대화 (정책 제한 적용)" }
+        }
+      }
+    },
+
+    "device": {
+      "ConnectionManager": {
+        "status": "planned", "phase": 6,
+        "methods": {
+          "connect": { "params": { "deviceId": "String" }, "returns": "Unit", "async": true },
+          "disconnect": { "params": {}, "returns": "Unit" },
+          "state": { "params": {}, "returns": "StateFlow<ConnectionState>" }
+        }
+      },
+      "CameraSource": {
+        "status": "planned", "phase": 5,
+        "note": "Phase 5는 휴대폰 카메라, Phase 6부터 인형 카메라로 교체",
+        "methods": { "capture": { "params": {}, "returns": "Bitmap", "async": true } },
+        "impls": ["PhoneCameraSource", "DollCameraSource"]
+      },
+      "DeviceController": {
+        "status": "planned", "phase": 6,
+        "methods": {
+          "send": { "params": { "command": "DeviceCommand" }, "returns": "Unit" },
+          "events": { "params": {}, "returns": "Flow<DeviceEvent>" }
+        }
+      }
+    }
+  },
+
+  "data_models": {
+    "ChatMessage": { "status": "implemented", "fields": { "role": "Role(USER|PET)", "text": "String" } },
+    "PetState": {
+      "status": "implemented",
+      "fields": { "mood": "String", "affection": "Int(0-100)", "energy": "Int(0-100)", "talkativeness": "Int(0-100)", "interactionMode": "String" },
+      "example": { "mood": "playful", "affection": 65, "energy": 80, "talkativeness": 40, "interactionMode": "normal" }
+    },
+    "Memory": {
+      "status": "planned",
+      "fields": {
+        "id": "Long",
+        "type": "MemoryType",
+        "content": "String",
+        "importance": "Float(0-1)",
+        "confidence": "Float(0-1)",
+        "sensitive": "Boolean",
+        "source": "USER_EXPLICIT|EXTRACTED|VISUAL",
+        "eventAt": "Instant?",
+        "createdAt": "Instant",
+        "updatedAt": "Instant",
+        "visualMemoryId": "Long?"
+      }
+    },
+    "MemoryType": { "enum": ["PROFILE", "HABIT", "RECENT", "SCHEDULE", "RELATIONSHIP", "VISUAL", "CONTEXT"] },
+    "MemoryCandidate": { "fields": { "type": "MemoryType", "content": "String", "importance": "Float", "confidence": "Float", "explicit": "Boolean" } },
+    "MemoryDecision": { "enum": ["ADD", "UPDATE", "HOLD", "IGNORE", "ASK_USER"] },
+    "VisualMemory": {
+      "fields": { "id": "Long", "label": "String", "description": "String", "embedding": "FloatArray", "thumbnailPath": "String?", "createdAt": "Instant" }
+    },
+    "UserProfile": {
+      "fields": { "name": "String?", "likes": "List<String>", "dislikes": "List<String>", "allergies": "List<String>" }
+    },
+    "SttResult": { "fields": { "text": "String", "confidence": "Float", "durationMs": "Long" } },
+    "InteractionEvent": {
+      "enum": ["USER_SPOKE", "TOUCHED", "BUTTON_PRESSED", "USER_RETURNED", "LONG_SILENCE", "SCHEDULE_DUE", "SCENE_CHANGED"]
+    },
+    "ConnectionState": { "enum": ["DISCONNECTED", "CONNECTING", "CONNECTED", "RECONNECTING"] }
+  },
+
+  "database_tables": {
+    "user_profile": ["id", "name", "likes_json", "dislikes_json", "allergies_json", "updated_at"],
+    "conversation": ["id", "session_id", "role", "text", "created_at"],
+    "memory": ["id", "type", "content", "importance", "confidence", "sensitive", "source", "event_at", "visual_memory_id", "created_at", "updated_at"],
+    "memory_fts": ["content"],
+    "visual_memory": ["id", "label", "description", "embedding_blob", "thumbnail_path", "created_at"],
+    "pet_state": ["id", "mood", "affection", "energy", "talkativeness", "interaction_mode", "updated_at"],
+    "settings": ["key", "value"]
+  },
+
+  "device_protocol": {
+    "status": "planned",
+    "phase": 6,
+    "transport_candidates": {
+      "BLE": "제어/센서/상태 (아래 JSON 메시지)",
+      "WiFi": "카메라 이미지(JPEG), 필요 시 오디오(PCM 16kHz mono)",
+      "BluetoothAudio": "방식 B 선택 시 별도 오디오 하드웨어"
+    },
+    "envelope": { "v": 1, "type": "String", "seq": "Int", "ts": "Long(ms)", "payload": "Object" },
+    "doll_to_phone": {
+      "hello": { "payload": { "deviceId": "String", "fw": "String", "capabilities": ["camera", "mic", "speaker", "touch", "imu", "led"] } },
+      "button": { "payload": { "id": "String", "action": "PRESS|LONG_PRESS|RELEASE" } },
+      "touch": { "payload": { "zone": "HEAD|HAND|BODY", "durationMs": "Int" } },
+      "imu": { "payload": { "event": "PICKED_UP|SHAKEN|LAID_DOWN" } },
+      "battery": { "payload": { "percent": "Int", "charging": "Boolean", "tempC": "Float" } },
+      "frame": { "payload": { "frameId": "Int", "width": "Int", "height": "Int", "format": "JPEG", "transport": "WIFI" } },
+      "error": { "payload": { "code": "String", "message": "String" } }
+    },
+    "phone_to_doll": {
+      "capture": { "payload": { "resolution": "QVGA|VGA|HD" } },
+      "camera": { "payload": { "enabled": "Boolean" } },
+      "mic": { "payload": { "enabled": "Boolean" } },
+      "led": { "payload": { "pattern": "OFF|IDLE|LISTENING|THINKING|SPEAKING|CAMERA_ON|LOW_BATTERY", "color": "#RRGGBB?" } },
+      "volume": { "payload": { "level": "Int(0-100)" } },
+      "sleep": { "payload": { "mode": "LIGHT|DEEP" } },
+      "ping": { "payload": {} }
+    }
+  },
+
+  "pipelines": {
+    "voice_chat": ["Mic", "Vad", "SttEngine", "MemoryRepository.search", "PromptManager.build", "LlmEngine.generateStream", "TtsEngine.speakStream", "Speaker", "MemoryExtractor.extract(async)"],
+    "vision_question": ["user request", "CameraSource.capture", "VisionEngine.describe", "VisualMemory 비교", "LlmEngine", "TtsEngine"],
+    "proactive": ["InteractionManager(schedule/event)", "정책 확인(시간대·빈도·OFF)", "PromptManager", "LlmEngine", "TtsEngine"]
+  },
+
+  "settings_keys": {
+    "llm.model": "qwen3-1.7b-q4",
+    "stt.engine": "sensevoice",
+    "tts.voice": "default",
+    "wakeword.enabled": false,
+    "proactive.enabled": false,
+    "proactive.quietHours": "23:00-08:00",
+    "proactive.maxPerDay": 5,
+    "camera.enabled": false,
+    "memory.autoSave": true,
+    "online.search.enabled": false
+  }
+}

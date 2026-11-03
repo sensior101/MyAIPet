@@ -1,0 +1,22 @@
+{
+  "request": {
+    "jsonrpc": "2.0",
+    "id": "req-0020",
+    "method": "tools/call",
+    "params": { "name": "memory.delete", "arguments": { "id": 17, "confirmed": false } }
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": "req-0020",
+    "result": {
+      "isError": true,
+      "structuredContent": {
+        "code": "NEEDS_CONFIRMATION",
+        "message": "삭제는 사용자 확인이 필요합니다.",
+        "retryable": false,
+        "confirmPrompt": "몽이에 대한 기억을 지울까?",
+        "target": { "id": 17, "summary": "몽이: 어릴 때부터 갖고 있던 곰 인형" }
+      }
+    }
+  }
+}

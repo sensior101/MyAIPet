@@ -1,0 +1,7 @@
+{
+  "v": 1,
+  "type": "button",
+  "seq": 42,
+  "ts": 1793787128000,
+  "payload": { "id": "talk", "action": "PRESS" }
+}

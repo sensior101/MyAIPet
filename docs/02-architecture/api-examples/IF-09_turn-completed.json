@@ -1,0 +1,21 @@
+{
+  "event": "TurnCompleted",
+  "turnId": "turn-20261104-0003",
+  "timestamp": "2026-11-04T19:32:08+09:00",
+  "userText": "얘는 내가 어릴 때부터 갖고 있던 인형이야. 이름은 몽이야.",
+  "petText": "몽이구나. 오래 같이 지냈네.",
+  "intent": "CHAT",
+  "vision": {
+    "imageId": "img-20261104-0002",
+    "description": "갈색 곰 인형",
+    "match": { "decision": "NEW", "similarity": 0.12 }
+  },
+  "memoryProcessResult": {
+    "candidates": [
+      { "type": "RELATIONSHIP", "content": "사용자가 어릴 때부터 갖고 있던 곰 인형, 이름은 몽이", "importance": 0.8, "confidence": 0.95, "explicit": false, "decision": "ADD" }
+    ],
+    "visualMemory": { "action": "ADD", "label": "몽이", "imageId": "img-20261104-0002" },
+    "petState": { "affection": { "from": 50, "to": 52 } },
+    "latencyMs": 4210
+  }
+}

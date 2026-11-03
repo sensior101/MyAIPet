@@ -1,0 +1,21 @@
+{
+  "jsonrpc": "2.0",
+  "id": "req-0012",
+  "result": {
+    "isError": false,
+    "structuredContent": {
+      "decision": "SAME",
+      "similarity": 0.91,
+      "thresholds": { "high": 0.85, "low": 0.70 },
+      "match": {
+        "visualMemoryId": 3,
+        "label": "몽이",
+        "description": "갈색 곰 인형",
+        "linkedMemories": [
+          { "id": 17, "type": "RELATIONSHIP", "content": "사용자가 어릴 때부터 갖고 있던 곰 인형, 이름은 몽이", "createdAt": "2026-11-04T19:32:10+09:00" }
+        ]
+      }
+    },
+    "_meta": { "latencyMs": 38 }
+  }
+}

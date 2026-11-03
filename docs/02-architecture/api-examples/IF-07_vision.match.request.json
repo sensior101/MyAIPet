@@ -1,0 +1,10 @@
+{
+  "jsonrpc": "2.0",
+  "id": "req-0012",
+  "method": "tools/call",
+  "params": {
+    "name": "vision.match",
+    "arguments": { "imageId": "img-20261105-0001" },
+    "_meta": { "turnId": "turn-20261105-0001", "timeoutMs": 300 }
+  }
+}
